@@ -1,15 +1,29 @@
-React Trello Clone
-===========================
+# Trello Redesign
+This project is a redesign of the popular productivity app Trello, built using Next.js, Firebase, and Tailwind CSS. The goal of this project is to create a more modern and visually appealing version of Trello that is easy to use and includes real-time updates.
 
-This a project I wanted to make as a tribute to Trello and to showcase some basic skills. The
-project is built with React.js, Firebase, Sass and can be viewd [here](https://react-trello-clone-42c7f.web.app/).
+## Features
+- Intuitive and easy-to-use interface
+- Real-time updates using Firebase
+- Drag-and-drop functionality for seamless organization
+- Responsive design optimized for desktop and mobile devices
 
-## Functionality
-The app allows you to create boards, which you can create an infinite number of lists. Each list can contain an infinite number of cards which can for example be 'todos'. You can create a kanban system to track productivity and can move cards into the 'Completed' list or just remove the cards when done. Each card needs to have a title and in addition you have the option to add a description.
+## Installation
+1. Clone the repository to your local machine using git clone https://github.com/shanedle/trello-redesign.git
+2. Install dependencies by running `yarn`
+3. Start the development server with `yarn dev`
+4. Open `http://localhost:3000` in your browser
 
-## Getting Started
-The app can be installed by cloning the Git repository and running 'npm install' in the project directory. Once all packages are installed, you can run 'npm start' to run the app in localhost.
+## Technologies Used
+- [Next.js:](https://nextjs.org/docs) a popular framework for building server-side rendered React applications
+- [Firebase:](https://firebase.google.com/docs) a platform for building web and mobile applications without server-side programming
+- [Tailwind CSS:](https://tailwindcss.com/docs) a utility-first CSS framework for quickly styling your applications
 
-## Prerequisites
-You will need to have node and npm installed.
+## Contributing
+Contributions are welcome! To contribute to the project, follow these steps:
+1. Fork the repository
+2. Create a new branch (`git checkout -b my-feature`)
+3. Make your changes and commit them (`git commit -am "Add feature"`)
+4. Push your changes to your branch (`git push origin my-feature`)
+5. Create a new Pull Request
 
+Thanks for considering contributing!
