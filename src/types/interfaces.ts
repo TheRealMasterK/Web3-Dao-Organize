@@ -14,12 +14,11 @@ export interface Columns {
   };
 }
 
-interface Card {
-  name: string;
-  lastEditedBy: string;
-  lastEditedAt: Date;
+export interface Cards {
+  [key: string]: {
+    name: string;
+  };
 }
-
 
 export interface Snapshot {
   [key: string]: DocumentData;
