@@ -1,73 +1,157 @@
-import { useState } from "react";
+import { useState } from 'react';
+import { CheckCircleOutline, Edit, Delete } from '@material-ui/icons';
+import { useAuth } from '@/lib/use-auth';
+//import CommentSection from './CommentSection';
+
 
 interface Props {
   card: {
+    id(id: any, checklist: { item: string; checked: boolean; }[]): unknown;
     name: string;
   };
-  update: (name: string) => void;
+  update: (name: string) => void
   remove: () => void;
+  id: string;
+}
+
+interface Comment {
+  username: string;
+  text: string;
 }
 
 const Card = ({ card, update, remove }: Props) => {
+  const { user } = useAuth();
   const [edit, setEdit] = useState(false);
   const [name, setName] = useState(card.name);
   const [showIcons, setShowIcons] = useState(false);
+  const [checklist, setChecklist] = useState<{ item: string; checked: boolean }[]>([]);
+  const [newChecklistItem, setNewChecklistItem] = useState('');
+  const [comments, setComments] = useState<string[]>([]);
+  const [newComment, setNewComment] = useState('');
+  const [inputValue, setInputValue] = useState(""); // Initialize to an empty string
+
+
+  const handleAddChecklistItem = () => {
+    if (newChecklistItem.trim() !== '') {
+      setChecklist((prev) => [...prev, { item: newChecklistItem.trim(), checked: false }]);
+      setNewChecklistItem('');
+    }
+  };
+
+  const handleUpdateChecklist = () => {
+    updateChecklist(card.id, checklist);
+  };
+
+
+  const handleChecklistItemToggle = (index: number) => {
+    setChecklist((prev) =>
+      prev.map((item, i) =>
+        i === index ? { ...item, checked: !item.checked } : item
+      )
+    );
+  };
 
   return (
     <div
-      className="group flex w-full items-center justify-between"
+      className="group flex flex-col w-full items-center justify-between bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-lg transition-shadow duration-300 ease-in-out p-4"
       onMouseEnter={() => setShowIcons(true)}
       onMouseLeave={() => setShowIcons(false)}
     >
-      <div className="flex w-full items-center justify-start gap-2">
+      <div className="flex w-full items-center justify-between">
         {edit ? (
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full animate-pulse bg-inherit"
+            className="flex-grow px-2 py-1 rounded-md border border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
           />
         ) : (
-          <p className="" style={{ wordBreak: "break-word" }}>
-            {card.name}
-          </p>
+          <h3 className="text-lg font-semibold break-words">{card.name}</h3>
         )}
+        <div className={`flex gap-2 ${showIcons ? 'opacity-100' : 'opacity-0 group-hover:opacity-100 transition-opacity duration-300'}`}>
+          {edit ? (
+            <>
+        <CheckCircleOutline
+          onClick={() => {
+            update(name);
+            handleUpdateChecklist();
+            setEdit(false);
+          }}
+          className="text-green-500 cursor-pointer"
+        />
+
+              <Delete
+                onClick={() => {
+                  setEdit(false);
+                  setName(card.name);
+                }}
+                className="text-red-500 cursor-pointer"
+              />
+            </>
+          ) : (
+            <>
+              <Edit
+                onClick={() => setEdit(true)}
+                className="text-gray-500 cursor-pointer"
+              />
+              <Delete
+                onClick={remove}
+                className="text-gray-500 cursor-pointer"
+              />
+            </>
+          )}
+        </div>
       </div>
-      <div className="flex items-center justify-end gap-2">
-        {edit ? (
-          <>
-            <button
-              onClick={() => {
-                update(name);
-                setEdit(false);
-              }}
-              className="bi bi-check-lg text-xl text-green-500"
-            ></button>
-            <button
-              onClick={() => {
-                setEdit(false);
-                setName(card.name);
-              }}
-              className="bi bi-x-lg text-red-500"
-            ></button>
-          </>
-        ) : (
-          <>
-            <button
-              onClick={() => setEdit(true)}
-              className="bi bi-pen trans text-gray-600 hover:text-yellow-600"
-              style={{ display: showIcons ? "block" : "none" }}
-            ></button>
-            <button
-              onClick={remove}
-              className="bi bi-trash trans text-gray-600 hover:text-red-600"
-              style={{ display: showIcons ? "block" : "none" }}
-            ></button>
-          </>
-        )}
+      <div className="mt-4 w-full">
+        <div className="flex gap-2 mb-2">
+          <input
+            type="text"
+            placeholder="Add a checklist item..."
+            value={newChecklistItem}
+            onChange={(e) => setNewChecklistItem(e.target.value)}
+            className="flex-grow px-2 py-1 rounded-md border border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+          />
+          <button
+            onClick={handleAddChecklistItem}
+            className="px-4 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors duration-300"
+          >
+            Add
+          </button>
+        </div>
+        <ul className="list-disc pl-5">
+          {checklist.map((item, index) => (
+            <li
+              key={index}
+              onClick={() => handleChecklistItemToggle(index)}
+              className={`cursor-pointer flex items-center gap-2 ${item.checked ? 'text-gray-400 line-through' : 'text-gray-700'}`}
+            >
+              <input
+                type="checkbox"
+                checked={item.checked}
+                readOnly
+                className="form-checkbox rounded text-blue-500 focus:ring-blue-500"
+              />
+              {item.item}
+            </li>
+          ))}
+        </ul>
       </div>
-    </div>
-  );
+
+
+        <div className="mt-2 space-y-2">
+          {comments.map((comment, index) => (
+            <div key={index} className="bg-gray-100 rounded-md p-2 text-gray-700">
+              {comment}
+            </div>
+          ))}
+        </div>
+      </div>
+  )
+
 };
 
 export default Card;
+function updateChecklist(id: any, checklist: { item: string; checked: boolean; }[]) {
+  throw new Error('Function not implemented.');
+}
+

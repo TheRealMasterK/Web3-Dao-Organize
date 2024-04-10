@@ -1,10 +1,4 @@
-import {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  ReactNode,
-} from "react";
+import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
@@ -28,43 +22,53 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   const signIn = async (email: string, password: string) => {
+    console.log("Signing in...");
     setLoading(true);
     try {
       await signInWithEmailAndPassword(auth, email, password);
+      console.log("Signed in successfully");
     } catch (error) {
-      console.error(error);
+      console.error("Sign-in error:", error);
     } finally {
       setLoading(false);
     }
   };
 
   const signUp = async (name: string, email: string, password: string) => {
+    console.log("Signing up...");
     setLoading(true);
     try {
       await createUserWithEmailAndPassword(auth, email, password);
       const currentUser = auth.currentUser;
       if (currentUser) {
         await updateProfile(currentUser, { displayName: name });
+        console.log("Signed up and updated profile successfully");
       }
       setLoading(false);
     } catch (error) {
-      console.error(error);
+      console.error("Sign-up error:", error);
       setLoading(false);
     }
   };
 
-  const signOut = () => auth.signOut();
+  const signOut = () => {
+    console.log("Signing out...");
+    auth.signOut();
+  };
 
   useEffect(() => {
-    // Check that the window object is defined to make sure this code runs on the client side
     if (typeof window !== "undefined") {
+      console.log("Setting up auth state listener");
       const unsubscribe = auth.onAuthStateChanged((user: User | null) => {
+        console.log("Auth state changed:", user);
         setUser(user);
         setLoading(false);
       });
-      return unsubscribe;
+      return () => {
+        console.log("Unsubscribing from auth state listener");
+        unsubscribe();
+      };
     }
-    // If window is undefined, do nothing
     return () => {};
   }, []);
 

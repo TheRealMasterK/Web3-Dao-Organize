@@ -97,6 +97,17 @@ const useBoardStore = create<Store>((set, get) => ({
     get().updateBuilder({ [column]: { state: false, value: "" } });
   },
 
+  updateChecklist: async (cardID: string, checklist: { item: string; checked: boolean }[]) => {
+    await updateDoc(get().boardDocRef(["cards", cardID]), { checklist });
+    set((state) => ({
+      cards: {
+        ...state.cards,
+        [cardID]: { ...state.cards[cardID], checklist },
+      },
+    }));
+  },
+
+
   editCard: (id: string, name: string) => {
     set({
       cards: { ...get().cards, [id]: { ...get().cards[id], name: name } },

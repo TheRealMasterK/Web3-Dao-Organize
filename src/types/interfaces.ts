@@ -32,3 +32,20 @@ export interface Board {
   createdAt: string;
   public: boolean;
 }
+
+
+export interface ChecklistItem {
+  value: string;
+  checked: boolean;
+}
+
+export interface CardBuilderProps {
+  columnID: string;
+}
+
+export interface CardBuilderState {
+  checklist: ChecklistItem[];
+  viewImages: boolean;
+  viewVideos: boolean;
+}
+
