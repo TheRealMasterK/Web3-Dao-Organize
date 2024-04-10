@@ -55,9 +55,6 @@ const Card = ({ card, update, remove }: Props) => {
     }
   };
 
-
-
-
   const handleUpdateChecklist = () => {
     boardStore.updateChecklist(card.id, checklist);
   };
