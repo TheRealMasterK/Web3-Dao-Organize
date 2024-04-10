@@ -49,18 +49,14 @@ interface Store {
   fetchCards: () => void;
   fetchColumns: () => void;
   initializeBoard: (ownerID: string, boardID: string, userID: string) => void;
-updateChecklist: async (cardID: string, checklist: { item: string; checked: boolean }[]) => {
-    console.log(`Updating checklist for card ID: ${cardID}`);
-    await updateDoc(get().boardDocRef(["cards", cardID]), { checklist });
-    console.log(`Updated checklist: ${JSON.stringify(checklist)}`);
-    set((state) => ({
-      cards: {
-        ...state.cards,
-        [cardID]: { ...state.cards[cardID], checklist },
-      },
-    }));
-  },
 
+  DragAndDrop: (result: DropResult) => void;
+}
+
+const useBoardStore = create<Store>((set, get) => ({
+  path: "",
+  order: [],
+  cards: {},
   board: null,
   columns: {},
   builder: {},
