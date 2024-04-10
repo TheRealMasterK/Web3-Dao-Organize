@@ -30,6 +30,8 @@ interface Store {
   ownerID: string;
   boardID: string;
   userID: string | null;
+  updateChecklist: (cardID: string, checklist: { item: string; checked: boolean }[]) => void;
+
 
   boardDocRef: (pathSegments?: string[]) => DocumentReference;
   boardCollectionRef: (pathSegments?: string[]) => Query<DocumentData>;
@@ -98,7 +100,9 @@ const useBoardStore = create<Store>((set, get) => ({
   },
 
   updateChecklist: async (cardID: string, checklist: { item: string; checked: boolean }[]) => {
+    console.log(`Updating checklist for card ID: ${cardID}`);
     await updateDoc(get().boardDocRef(["cards", cardID]), { checklist });
+    console.log(`Updated checklist: ${JSON.stringify(checklist)}`);
     set((state) => ({
       cards: {
         ...state.cards,
@@ -106,6 +110,8 @@ const useBoardStore = create<Store>((set, get) => ({
       },
     }));
   },
+
+
 
 
   editCard: (id: string, name: string) => {

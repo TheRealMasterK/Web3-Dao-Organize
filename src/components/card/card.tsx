@@ -2,25 +2,24 @@ import { useState } from 'react';
 import { CheckCircleOutline, Edit, Delete } from '@material-ui/icons';
 import { useAuth } from '@/lib/use-auth';
 //import CommentSection from './CommentSection';
-
+import useBoardStore from '@/lib/store';
 
 interface Props {
   card: {
-    id(id: any, checklist: { item: string; checked: boolean; }[]): unknown;
+    id: string;
     name: string;
+    checklist: { item: string; checked: boolean }[];
   };
-  update: (name: string) => void
+  update: (name: string) => void;
   remove: () => void;
-  id: string;
+  updateChecklist: (cardID: string, checklist: { item: string; checked: boolean }[]) => void;
+
 }
 
-interface Comment {
-  username: string;
-  text: string;
-}
 
 const Card = ({ card, update, remove }: Props) => {
   const { user } = useAuth();
+  const boardStore = useBoardStore();
   const [edit, setEdit] = useState(false);
   const [name, setName] = useState(card.name);
   const [showIcons, setShowIcons] = useState(false);
@@ -30,7 +29,6 @@ const Card = ({ card, update, remove }: Props) => {
   const [newComment, setNewComment] = useState('');
   const [inputValue, setInputValue] = useState(""); // Initialize to an empty string
 
-
   const handleAddChecklistItem = () => {
     if (newChecklistItem.trim() !== '') {
       setChecklist((prev) => [...prev, { item: newChecklistItem.trim(), checked: false }]);
@@ -39,9 +37,8 @@ const Card = ({ card, update, remove }: Props) => {
   };
 
   const handleUpdateChecklist = () => {
-    updateChecklist(card.id, checklist);
+    boardStore.updateChecklist(card.id, checklist);
   };
-
 
   const handleChecklistItemToggle = (index: number) => {
     setChecklist((prev) =>
@@ -71,14 +68,14 @@ const Card = ({ card, update, remove }: Props) => {
         <div className={`flex gap-2 ${showIcons ? 'opacity-100' : 'opacity-0 group-hover:opacity-100 transition-opacity duration-300'}`}>
           {edit ? (
             <>
-        <CheckCircleOutline
-          onClick={() => {
-            update(name);
-            handleUpdateChecklist();
-            setEdit(false);
-          }}
-          className="text-green-500 cursor-pointer"
-        />
+              <CheckCircleOutline
+                onClick={() => {
+                  update(name);
+                  handleUpdateChecklist();
+                  setEdit(false);
+                }}
+                className="text-green-500 cursor-pointer"
+              />
 
               <Delete
                 onClick={() => {
@@ -137,21 +134,18 @@ const Card = ({ card, update, remove }: Props) => {
         </ul>
       </div>
 
-
-        <div className="mt-2 space-y-2">
-          {comments.map((comment, index) => (
-            <div key={index} className="bg-gray-100 rounded-md p-2 text-gray-700">
-              {comment}
-            </div>
-          ))}
-        </div>
+      <div className="mt-2 space-y-2">
+        {comments.map((comment, index) => (
+          <div key={index} className="bg-gray-100 rounded-md p-2 text-gray-700">
+            {comment}
+          </div>
+        ))}
       </div>
+    </div>
   )
-
 };
 
 export default Card;
-function updateChecklist(id: any, checklist: { item: string; checked: boolean; }[]) {
-  throw new Error('Function not implemented.');
-}
+
+
 
