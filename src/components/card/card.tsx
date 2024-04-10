@@ -37,9 +37,7 @@ const Card = ({ card, update, remove }: Props) => {
   };
 
   const handleUpdateChecklist = () => {
-    console.log(`Calling updateChecklist for card ID: ${card.id} with checklist: ${JSON.stringify(checklist)}`);
     boardStore.updateChecklist(card.id, checklist);
-    console.log('UpdateChecklist called');
   };
 
   const handleChecklistItemToggle = (index: number) => {
