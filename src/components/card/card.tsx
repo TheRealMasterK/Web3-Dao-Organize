@@ -3,6 +3,8 @@ import { CheckCircleOutline, Edit, Delete } from '@material-ui/icons';
 import { useAuth } from '@/lib/use-auth';
 //import CommentSection from './CommentSection';
 import useBoardStore from '@/lib/store';
+import { doc, updateDoc } from 'firebase/firestore';
+import { database } from '@/lib/firebase';
 
 interface Props {
   card: {
@@ -29,12 +31,32 @@ const Card = ({ card, update, remove }: Props) => {
   const [newComment, setNewComment] = useState('');
   const [inputValue, setInputValue] = useState(""); // Initialize to an empty string
 
-  const handleAddChecklistItem = () => {
+  const handleAddChecklistItem = async () => {
     if (newChecklistItem.trim() !== '') {
-      setChecklist((prev) => [...prev, { item: newChecklistItem.trim(), checked: false }]);
+      const newChecklist = [...checklist, { item: newChecklistItem.trim(), checked: false }];
+      setChecklist(newChecklist);
       setNewChecklistItem('');
+
+      if (user && user.uid && boardStore.boardID && card.id) {
+        const cardRef = doc(database, `users/${user.uid}/boards/${boardStore.boardID}/cards`, card.id);
+        try {
+          await updateDoc(cardRef, { checklist: newChecklist });
+        } catch (error) {
+          console.error('Error updating checklist:', error);
+        }
+      } else {
+        console.error('Error: Missing user UID, board ID, or card ID');
+        console.error('user.uid:', user?.uid);
+        console.error('boardStore.boardID:', boardStore.boardID);
+        console.error('card.id:', card.id);
+        console.log('card:', card);
+        console.log('Card prop:', card);
+      }
     }
   };
+
+
+
 
   const handleUpdateChecklist = () => {
     boardStore.updateChecklist(card.id, checklist);
