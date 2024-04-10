@@ -80,18 +80,14 @@ const useBoardStore = create<Store>((set, get) => ({
   updateBuilder: (payload: any) =>
     set((state) => ({ builder: { ...state.builder, ...payload } })),
   setStatus: (payload: number) => set({ status: payload }),
-  updateChecklist: async (cardID: string, checklist: { item: string; checked: boolean }[]) => {
-    console.log(`Updating checklist for card ID: ${cardID}`);
-    await updateDoc(get().boardDocRef(["cards", cardID]), { checklist });
-    console.log(`Updated checklist: ${JSON.stringify(checklist)}`);
-    set((state) => ({
-      cards: {
-        ...state.cards,
-        [cardID]: { ...state.cards[cardID], checklist },
-      },
-    }));
-  },
 
+  addCard: (column: string) => {
+    if (!get().builder[column].value) return;
+    const id = uuid();
+    const card = { [id]: { name: get().builder[column].value } };
+    const columnCards = [...get().columns[column].cards, id];
+
+    set({ cards: { ...get().cards, ...card } });
     set({
       columns: {
         ...get().columns,
